@@ -1,10 +1,8 @@
 package model;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Cliente {
@@ -28,23 +26,22 @@ public class Cliente {
 		    		}
 		    		s.close();
 		    	} catch (IOException e) {
-					System.out.println("Erro ao ler mensagens do cliente");
+					System.out.println("Erro ao ler mensagens do servidor");
 					e.printStackTrace();
 				}
 	    	}
 		 }).start();
 		
-		 Scanner teclado = new Scanner(System.in);
-	     PrintStream saida = new PrintStream(cliente.getOutputStream());
-	     while (teclado.hasNextLine()) {
-	       saida.println(teclado.nextLine());
+		 Scanner clienteInput = new Scanner(System.in);
+	     PrintStream psCliente = new PrintStream(cliente.getOutputStream());
+	     while (clienteInput.hasNextLine()) {
+	    	 psCliente.println(clienteInput.nextLine());
 	     }
 	     
-	     saida.close();
-	     teclado.close();
+	     psCliente.close();
+	     clienteInput.close();
 		 cliente.close();    
 	} catch (NumberFormatException | IOException e1) {
-		// TODO Auto-generated catch block
 		e1.printStackTrace();
 	}
    }
