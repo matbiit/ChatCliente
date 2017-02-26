@@ -86,7 +86,7 @@ public class Login extends JDialog {
 		content.add(iconClose);
 		
 		JLabel lblChatImg = new JLabel();
-		lblChatImg.setIcon(new ImageIcon(this.getClass().getResource("/imgs/chat.png")));
+		lblChatImg.setIcon(new ImageIcon(this.getClass().getResource("/imgs/login/chat.png")));
 		lblChatImg.setBounds(70,20,50,50);
 		lblChatImg.setVisible(true);
 		content.add(lblChatImg);
@@ -110,7 +110,7 @@ public class Login extends JDialog {
 		userPanel.setLayout(null);
 		userPanel.setBackground(new Color(137,196,244));
 		
-		iconUser = addIcon("/imgs/user_16x16.png");
+		iconUser = addIcon("/imgs/login/user_16x16.png");
 		iconUser.setBounds(5, 8, 28, 20);
 		userPanel.add(iconUser);
 		
@@ -165,7 +165,7 @@ public class Login extends JDialog {
 		passwordPanel.setLayout(null);
 		passwordPanel.setBackground(new Color(137,196,244));
 		
-		iconPassword = addIcon("/imgs/password_16x16.png");
+		iconPassword = addIcon("/imgs/login/password_16x16.png");
 		iconPassword.setBounds(5, 8, 28, 20);
 		passwordPanel.add(iconPassword);
 		
