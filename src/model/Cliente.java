@@ -32,15 +32,15 @@ public class Cliente {
 	    	}
 		 }).start();
 		
-		 Scanner clienteInput = new Scanner(System.in);
-	     PrintStream psCliente = new PrintStream(cliente.getOutputStream());
-	     while (clienteInput.hasNextLine()) {
-	    	 psCliente.println(clienteInput.nextLine());
-	     }
-	     
-	     psCliente.close();
-	     clienteInput.close();
-		 cliente.close();    
+//		 Scanner clienteInput = new Scanner(System.in);
+//	     PrintStream psCliente = new PrintStream(cliente.getOutputStream());
+//	     while (clienteInput.hasNextLine()) {
+//	    	 psCliente.println(clienteInput.nextLine());
+//	     }
+//	     
+//	     psCliente.close();
+//	     clienteInput.close();
+//		 cliente.close();    
 	} catch (NumberFormatException | IOException e1) {
 		e1.printStackTrace();
 	}

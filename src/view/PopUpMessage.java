@@ -125,7 +125,7 @@ public class PopUpMessage extends JDialog  {
 		content.add(chatHeader);
 		
 		JLabel systemLogo = new JLabel();
-		systemLogo.setIcon(new ImageIcon(this.getClass().getResource("/imgs/popup/" + user.toLowerCase() + "_notificacao.png")));
+		systemLogo.setIcon(new ImageIcon(this.getClass().getResource("/imgs/user/" + user.toLowerCase() + ".png")));
 		systemLogo.setBounds(20, 40, 60, 60);
 		systemLogo.setVisible(true);
 		content.add(systemLogo);

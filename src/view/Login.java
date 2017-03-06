@@ -16,16 +16,20 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.RoundRectangle2D;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
+
+import controller.Core;
+
 
 public class Login extends JDialog {
 
@@ -35,17 +39,17 @@ public class Login extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private JLabel iconClose;
 	private int xSize, ySize;
-	private JTextField txtUserName;
-	private JPasswordField password;
-	private JLabel iconUser, lblUserError, iconPassword, lblPasswordError, lblLoginError;
+	private JTextField txtUserName, ip, port;
+	private JLabel iconUser, lblUserError, iconIp, iconPort, lblLoginError, lblSignIn; 
 	private Color color;
 	private int gap;
 	private static int intUser= 0;
-	private static int intPass= 0;
+	private static int intIp= 0;
+	private static int intPort= 0;
 	private JPanel content, signInPanel;
 	private static Login instance = new Login();
-	private String id, name;
 	private boolean  isLogin;
+	private boolean connected;
 	
 	private Login(){
 		
@@ -54,7 +58,7 @@ public class Login extends JDialog {
 		content = new JPanel();
 		
 		xSize = 350;
-		ySize = 300;
+		ySize = 370;
 		
 		this.setSize(xSize,ySize);
 		this.setLocationRelativeTo(null);
@@ -135,7 +139,7 @@ public class Login extends JDialog {
 				if(intUser == 0){
 					txtUserName.setForeground(Color.WHITE);
 					txtUserName.setText(new Character(c).toString());
-					password.setText("");
+//					ip.setText("");
 				}
 				intUser++;
 			}
@@ -160,47 +164,39 @@ public class Login extends JDialog {
 		lblUserError.setVisible(false);
 		content.add(lblUserError);
 		
-		JPanel passwordPanel = new JPanel();
-		passwordPanel.setBounds(50, 165, 250, 35);
-		passwordPanel.setLayout(null);
-		passwordPanel.setBackground(new Color(137,196,244));
+		JPanel ipPanel = new JPanel();
+		ipPanel.setBounds(50, 165, 250, 35);
+		ipPanel.setLayout(null);
+		ipPanel.setBackground(new Color(137,196,244));
 		
-		iconPassword = addIcon("/imgs/login/password_16x16.png");
-		iconPassword.setBounds(5, 8, 28, 20);
-		passwordPanel.add(iconPassword);
+		iconIp = addIcon("/imgs/login/icon_16x16.png");
+		iconIp.setBounds(5, 8, 28, 20);
+		ipPanel.add(iconIp);
 		
-		password = new JPasswordField("12345678");
-		password.setBorder(null);
-		password.setFont(new Font("Segoe UI Light", Font.BOLD, 18));
-		password.setForeground(Color.WHITE);
-		password.setCaretColor(Color.WHITE);
-		password.setBackground(new Color(137,196,244));
-		password.setColumns(10);
-		password.setBounds(30, 0, 215, 35);
-		password.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				login();
-			}
-		});
-		password.addKeyListener(new KeyListener() {
+		ip = new JTextField("127.0.0.1");
+		ip.setBorder(null);
+		ip.setFont(new Font("Segoe UI Light", Font.BOLD, 18));
+		ip.setForeground(Color.WHITE);
+		ip.setCaretColor(Color.WHITE);
+		ip.setBackground(new Color(137,196,244));
+		ip.setColumns(10);
+		ip.setBounds(30, 0, 215, 35);
+		ip.addKeyListener(new KeyListener() {
 			
 			@Override
 			public void keyTyped(KeyEvent e) {
-				password.setForeground(Color.WHITE);
-				lblPasswordError.setVisible(false);
+				ip.setForeground(Color.WHITE);
 				lblLoginError.setVisible(false);
 			}
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
 				char c = e.getKeyChar();
-				if(intPass == 0){
-					password.setForeground(Color.WHITE);
-					password.setText(new Character(c).toString());
+				if(intIp == 0){
+					ip.setForeground(Color.WHITE);
+					ip.setText(new Character(c).toString());
 				}
-				intPass++;
+				intIp++;
 				
 			}
 			
@@ -210,20 +206,61 @@ public class Login extends JDialog {
 				
 			}
 		});
-		passwordPanel.add(password);
+		ipPanel.add(ip);
 		
-		lblPasswordError = new JLabel("Password can not be empty!");
-		lblPasswordError.setForeground(new Color(198, 86, 94));
-		lblPasswordError.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		lblPasswordError.setLocation(50, 200);
-		lblPasswordError.setHorizontalAlignment(SwingConstants.LEFT);
-		lblPasswordError.setVerticalAlignment(SwingConstants.TOP);
-		lblPasswordError.setSize(300, 30);
-		lblPasswordError.setVisible(false);
-		content.add(lblPasswordError);
+		JPanel portPanel = new JPanel();
+		portPanel.setBounds(50, 220, 250, 35);
+		portPanel.setLayout(null);
+		portPanel.setBackground(new Color(137,196,244));
+		
+		iconPort = addIcon("/imgs/login/port_16x16.png");
+		iconPort.setBounds(5, 8, 28, 20);
+		portPanel.add(iconPort);
+		
+		port = new JTextField("8000");
+		port.setBorder(null);
+		port.setFont(new Font("Segoe UI Light", Font.BOLD, 18));
+		port.setForeground(Color.WHITE);
+		port.setCaretColor(Color.WHITE);
+		port.setBackground(new Color(137,196,244));
+		port.setColumns(10);
+		port.setBounds(30, 0, 215, 35);
+		port.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				login();
+			}
+		});
+		port.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+				port.setForeground(Color.WHITE);
+				lblLoginError.setVisible(false);
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				char c = e.getKeyChar();
+				if(intPort == 0){
+					port.setForeground(Color.WHITE);
+					port.setText(new Character(c).toString());
+				}
+				intPort++;
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		portPanel.add(port);
 		
 		signInPanel = new JPanel();
-		signInPanel.setBounds(50, 230, 250, 35);
+		signInPanel.setBounds(50, 270, 250, 35);
 		signInPanel.setLayout(null);
 		signInPanel.setBackground(new Color(31,58,147));
 		color = Color.WHITE;
@@ -292,10 +329,10 @@ public class Login extends JDialog {
 			
 		});
 		
-		JLabel lblSignIn = new JLabel("Login");
+		lblSignIn = new JLabel("Login");
 		lblSignIn.setForeground(Color.WHITE);
 		lblSignIn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		lblSignIn.setBounds(100,0,70,30);
+		lblSignIn.setBounds(105,0,90,30);
 		lblSignIn.setVisible(true);
 		signInPanel.add(lblSignIn);
 		
@@ -310,7 +347,8 @@ public class Login extends JDialog {
 		content.add(lblLoginError);
 		
 		content.add(userPanel);
-		content.add(passwordPanel);
+		content.add(ipPanel);
+		content.add(portPanel);
 		content.add(signInPanel);
 		
 		content.setVisible(true);
@@ -327,20 +365,70 @@ public class Login extends JDialog {
 	private void login() {
 		if((txtUserName.getText().equals("")) || (txtUserName.getText().equals("seu usuário")))
 			lblUserError.setVisible(true);
-		else if(new String(password.getPassword()).equals(""))
-			lblPasswordError.setVisible(true);
 		else{
 			instance.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			content.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			txtUserName.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			password.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			ip.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			lblSignIn.setText("Processing...");
+			lblSignIn.setLocation(95, 0);
 			isLogin = true;
-			//TODO Login
-			
+			carregarEConectar();
 		}
 	}
 	
 	
+	public void carregarEConectar() {
+		
+		Runnable carregar = new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					carregar();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		
+		Runnable conectarAoServidor = new Runnable() {
+			
+			@Override
+			public void run() {
+				conectarAoServidor();
+			}
+		};
+		
+		Thread t1 = new Thread(carregar);
+		Thread t2 = new Thread(conectarAoServidor);
+		
+		t1.start();
+		t2.start();
+		
+	}
+	
+	private synchronized void conectarAoServidor(){
+		
+		Core.getInstance().inicializarChat(getIP(), getPort());
+		
+		connected = true;
+		
+		notify();
+	}
+	
+	private synchronized void carregar() throws InterruptedException{
+	
+		while(!connected)
+			wait();
+		
+		
+		connected = false;
+		instance.setVisible(false);
+		new Tela();
+	}
+
+
 	/**
 	 * Add an icon into the text field.
 	 * 
@@ -354,12 +442,16 @@ public class Login extends JDialog {
 		return icon;
 	}
 	
-	public String getId(){
-		return id;
+	public String getIP(){
+		return ip.getText();
 	}
 	
-	public String getName(){
-		return name;
+	public String getPort(){
+		return port.getText();
+	}
+	
+	public String getUser(){
+		return txtUserName.getText();
 	}
 	
 	public static Login getInstance(){

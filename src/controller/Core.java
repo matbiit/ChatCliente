@@ -1,13 +1,28 @@
 package controller;
 
 import model.Cliente;
+import view.Login;
+import view.Tela;
 
 public class Core {
 
+	private static Core instance = new Core();
+	private Cliente cliente;
+	
 	public static void main(String[] args) {
+
+		Login.getInstance();
+//		new Tela();
 		
-		Cliente cliente = new Cliente();
-		cliente.iniciarNoIPePorta("127.0.0.1", "777");
-		
+	}
+	
+	public void inicializarChat(String ip, String porta){
+		this.cliente = new Cliente();
+		cliente.iniciarNoIPePorta(ip, porta);
+	}
+	
+	
+	public static Core getInstance(){
+		return instance;
 	}
 }
