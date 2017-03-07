@@ -1,19 +1,27 @@
 package model;
 
-import java.util.Set;
 import java.util.UUID;
 
 public class ResponseProtocol {
 	
+	private String cmd;
 	private String id;
 	private String msgNr;
+	private String dst;
 	private String[] data;
-	private Set<String> userLoggedIn;
 	
 	public ResponseProtocol(){
 		this.msgNr = UUID.randomUUID().toString();
 	}
 	
+	public String getCmd() {
+		return cmd;
+	}
+
+	public void setCmd(String cmd) {
+		this.cmd = cmd;
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -26,6 +34,15 @@ public class ResponseProtocol {
 	public void setMsgNr(String msgNr) {
 		this.msgNr = msgNr;
 	}
+	
+	public String getDst() {
+		return dst;
+	}
+
+	public void setDst(String dst) {
+		this.dst = dst;
+	}
+
 	public String[] getData() {
 		return data;
 	}
@@ -33,11 +50,4 @@ public class ResponseProtocol {
 		this.data = data;
 	}
 
-	public Set<String> getUserLoggedIn() {
-		return userLoggedIn;
-	}
-
-	public void setUsersLoggedIn(Set<String> set) {
-		this.userLoggedIn = set;
-	}
 }

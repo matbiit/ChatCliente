@@ -7,42 +7,33 @@ import java.util.Scanner;
 
 public class Cliente {
    
+	private Socket servidor; 
    
-   public void iniciarNoIPePorta(String ip, String porta) {
-    Socket cliente;
+   public void iniciarNoIPePorta(String user, String ip, String porta) {
 	try {
-		cliente = new Socket(ip, Integer.parseInt(porta));
+		servidor = new Socket(ip, Integer.parseInt(porta));
 		System.out.println("Conectado ao servidor");
-		 
-		new Thread(new Runnable() {
-					
-			@Override
-			public void run() {
-				Scanner s;
-				try {
-					s = new Scanner(cliente.getInputStream());
-					while (s.hasNextLine()) {
-						System.out.println(s.nextLine());
-		    		}
-		    		s.close();
-		    	} catch (IOException e) {
-					System.out.println("Erro ao ler mensagens do servidor");
-					e.printStackTrace();
-				}
-	    	}
-		 }).start();
+
+		ResponseHandler response = new ResponseHandler();
 		
-//		 Scanner clienteInput = new Scanner(System.in);
-//	     PrintStream psCliente = new PrintStream(cliente.getOutputStream());
-//	     while (clienteInput.hasNextLine()) {
-//	    	 psCliente.println(clienteInput.nextLine());
-//	     }
-//	     
-//	     psCliente.close();
-//	     clienteInput.close();
-//		 cliente.close();    
+		this.enviaMensagemAoServidor(response.doLogin(user));
+		 
+		RequestHandler tc = new RequestHandler(servidor);
+		new Thread(tc).start();
+		 
 	} catch (NumberFormatException | IOException e1) {
 		e1.printStackTrace();
 	}
    }
+   
+   public void enviaMensagemAoServidor(String msg){
+		try {
+			PrintStream ps = new PrintStream(servidor.getOutputStream());
+			System.out.println(msg);
+			ps.println(msg);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

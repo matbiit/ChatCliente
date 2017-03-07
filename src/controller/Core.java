@@ -16,9 +16,9 @@ public class Core {
 		
 	}
 	
-	public void inicializarChat(String ip, String porta){
+	public void inicializarChat(String user, String ip, String porta){
 		this.cliente = new Cliente();
-		cliente.iniciarNoIPePorta(ip, porta);
+		cliente.iniciarNoIPePorta(user, ip, porta);
 	}
 	
 	

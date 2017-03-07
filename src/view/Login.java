@@ -410,7 +410,7 @@ public class Login extends JDialog {
 	
 	private synchronized void conectarAoServidor(){
 		
-		Core.getInstance().inicializarChat(getIP(), getPort());
+		Core.getInstance().inicializarChat(getUser(), getIP(), getPort());
 		
 		connected = true;
 		
@@ -451,7 +451,7 @@ public class Login extends JDialog {
 	}
 	
 	public String getUser(){
-		return txtUserName.getText();
+		return txtUserName.getText().toLowerCase();
 	}
 	
 	public static Login getInstance(){

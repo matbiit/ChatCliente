@@ -1,8 +1,6 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.Set;
-import java.util.Vector;
 
 public class ResponseHandler {
 	
@@ -12,25 +10,11 @@ public class ResponseHandler {
 		this.parser = new Parser();
 	}
 
-	public String doLogin(String id, Set<String> users) {
-		// TODO verifica se há mensagens pelo id;
+	public String doLogin(String id) {
 		ResponseProtocol response = new ResponseProtocol();
-		response.setId("0");
-		response.setUsersLoggedIn(users);
+		response.setCmd("login");
+		response.setId(id);
 		return this.parser.parseResponseToJson(response);
 	}
 
-	public String sendFeedback() {
-		ResponseProtocol response = new ResponseProtocol();
-		response.setId("0");
-		return this.parser.parseResponseToJson(response);
-	}
-	
-	public String messageFeedback(ArrayList<StoredMessage> userMessages){
-		ResponseProtocol response = new ResponseProtocol();
-		response.setId("0");
-		response.setData(this.parser.parseMessageToJson(userMessages));
-		return this.parser.parseResponseToJson(response);
-	}
-	
 }

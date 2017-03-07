@@ -3,6 +3,7 @@ package view;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics2D;
@@ -29,7 +30,7 @@ public class Tela {
 	private JFrame frame;
 	private JLabel lblMinimize;
 	private Point clicked;
-	private String user = Login.getInstance().getUser().toLowerCase();
+	private String user = Login.getInstance().getUser();
 	
 	/**
 	 * Launch the application.
@@ -140,7 +141,7 @@ public class Tela {
 		int size = 60;
 		
 		try {
-			photo = drawPhoto(size);
+			photo = drawPhoto(user, size);
 		} catch (IOException e1) {
 			System.out.println("ERROR to upload photo");
 			photo = new JLabel();
@@ -179,11 +180,31 @@ public class Tela {
 		lblSeparador.setVisible(true);
 		mainPanel.add(lblSeparador);
 		
+		JPanel servidorChatPanel = createUserPanel("servidor", 0);
+		JPanel rafaelChatPanel = createUserPanel("rafael", 1);
+		
+		mainPanel.add(servidorChatPanel);
+		mainPanel.add(rafaelChatPanel);
+		
 		JPanel conversaPanel = new JPanel();
 		conversaPanel.setBounds(200, 35, 550, 445);
 		conversaPanel.setBackground(Color.WHITE);
 		conversaPanel.setBorder(BorderFactory.createLineBorder(new Color(191,191,191)));
 		conversaPanel.setLayout(null);
+		
+
+		JLabel lblNoMessage = new JLabel();
+		lblNoMessage.setIcon(new ImageIcon(this.getClass().getResource("/imgs/no-message.png")));
+		lblNoMessage.setBounds(150, 30, 256,256);
+		lblNoMessage.setVisible(true);
+		conversaPanel.add(lblNoMessage);
+		
+		JLabel lblNoChats = new JLabel("Sem mensagens. Abra um chat, por favor!");
+		lblNoChats.setForeground(Color.BLACK);
+		lblNoChats.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		lblNoChats.setBounds(110,300,350,30);
+		lblNoChats.setVisible(true);
+		conversaPanel.add(lblNoChats);
 		
 		mainPanel.setOpaque(false);
 		
@@ -194,8 +215,73 @@ public class Tela {
 		frame.setVisible(true);
 		
 	}
+
+	private JPanel createUserPanel(String user, int order) {
+		
+		JPanel userChatPanel = new JPanel();
+		userChatPanel.setBounds(1, 218 + (70*order), 195, 70);
+		userChatPanel.setBackground(new Color(245,250,253));
+		userChatPanel.setLayout(null);
+		userChatPanel.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				frame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				frame.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+			}
+		});
+		
+		JLabel userPhoto;
+		int userSize = 50;
+		
+		try {
+			userPhoto = drawPhoto(user, userSize);
+		} catch (IOException e1) {
+			System.out.println("ERROR to upload photo");
+			userPhoto = new JLabel();
+			userPhoto.setIcon(new ImageIcon(this.getClass().getResource("/imgs/users/user.png")));
+		}
+		
+		userPhoto.setBounds(20, 10, userSize, userSize);
+		userPhoto.setVisible(true);
+		userChatPanel.add(userPhoto);
+		
+		JLabel lblUserNameChat = new JLabel(user.substring(0, 1).toUpperCase() + user.substring(1));
+		lblUserNameChat.setForeground(Color.BLACK);
+		lblUserNameChat.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblUserNameChat.setBounds(85,10,70,30);
+		lblUserNameChat.setVisible(true);
+		userChatPanel.add(lblUserNameChat);
+		
+		JLabel lblStatus = new JLabel("Online");
+		lblStatus.setForeground(new Color(38,194,129));
+		lblStatus.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		lblStatus.setBounds(85,30,70,30);
+		lblStatus.setVisible(true);
+		userChatPanel.add(lblStatus);
+		return userChatPanel;
+	}
 	
-	private JLabel drawPhoto(int size) throws IOException {
+	private JLabel drawPhoto(String user, int size) throws IOException {
 		
 		Path currentRelativePath = Paths.get("");
 		String path = currentRelativePath.toAbsolutePath().toString();
