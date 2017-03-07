@@ -7,7 +7,7 @@ public class RequestProtocol {
 	private String id;
 	private String msgNr;
 	private String dst;
-	private String data;
+	private DataProtocol data;
 	private Set<String> userLoggedIn;
 	
 	public String getId() {
@@ -28,10 +28,10 @@ public class RequestProtocol {
 	public void setDst(String dst) {
 		this.dst = dst;
 	}
-	public String getData() {
+	public DataProtocol getData() {
 		return data;
 	}
-	public void setData(String data) {
+	public void setData(DataProtocol data) {
 		this.data = data;
 	}
 	public Set<String> getUserLoggedIn() {

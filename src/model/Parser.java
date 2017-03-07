@@ -19,9 +19,4 @@ public class Parser {
 	public String parseResponseToJson(ResponseProtocol response) {
 		return this.jsonParser.toJson(response);
 	}
-	
-	public String parseMessageToJson(ArrayList<StoredMessage> userMessages){
-		return this.jsonParser.toJson(userMessages);
-	}
-	
 }

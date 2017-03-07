@@ -32,11 +32,16 @@ class RequestHandler implements Runnable {
 	}
 
 	private void checkRequest(RequestProtocol request) {
-		if(request.getUserLoggedIn().size() > 1){
-			for (String user : request.getUserLoggedIn()) {
-				if(!user.equalsIgnoreCase(Login.getInstance().getUser()))
-					Tela.getInstance().addUser(user);
+		if(request.getUserLoggedIn() != null)
+			if(request.getUserLoggedIn().size() > 1){
+				for (String user : request.getUserLoggedIn()) {
+					if(!user.equalsIgnoreCase(Login.getInstance().getUser()))
+						Tela.getInstance().addUser(user);
+				}
 			}
+		if(request.getData() != null){
+			Tela.getInstance().receiveMessage(request.getData().getData());
 		}
+			
 	}
 }

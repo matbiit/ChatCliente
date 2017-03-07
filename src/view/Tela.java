@@ -11,6 +11,8 @@ import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -28,9 +30,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
+
+import controller.Core;
 
 
 public class Tela {
@@ -39,10 +45,13 @@ public class Tela {
 	private JLabel lblMinimize, lblNoMessage, lblNoChats;
 	private Point clicked;
 	private JTextArea txtMessage;
+	private LightScrollPane scrollPane;
 	private JPanel mainPanel, conversaPanel, conversacaoPanel;
 	private int contUsers = 0;
 	private int countMessages = 0;
+	private int intMessage = 0;
 	private String user = Login.getInstance().getUser();
+	private String userConversation;
 	private static Tela instance = new Tela();
 	
 	/**
@@ -232,6 +241,8 @@ public class Tela {
 	}
 
 	private void openChat(String userConversation) {
+		this.userConversation = userConversation;
+		
 		JLabel photoUserConversation;
 		int sizeUserConversation = 70;
 		
@@ -265,7 +276,7 @@ public class Tela {
 		conversacaoPanel.setBackground(Color.white);
 		conversacaoPanel.setLayout(null);
 		
-		LightScrollPane scrollPane = new LightScrollPane(conversacaoPanel);
+		scrollPane = new LightScrollPane(conversacaoPanel);
 		scrollPane.setBorder(null);
 		scrollPane.setLocation(5, 110);
 		scrollPane.setSize(535,250);
@@ -282,12 +293,59 @@ public class Tela {
 		lblSeparadorConversationTxtArea.setVisible(true);
 		conversaPanel.add(lblSeparadorConversationTxtArea);
 		
-		txtMessage = new JTextArea();
+		txtMessage = new JTextArea("Digite sua mensagem aqui...");
 		txtMessage.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
 		txtMessage.setForeground(Color.BLACK);
 		txtMessage.setCaretColor(Color.BLACK);
 		txtMessage.setLineWrap(true);
 		txtMessage.setWrapStyleWord(true);
+		txtMessage.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+				
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER){
+				    e.consume();
+				    sendMessage(txtMessage.getText());
+				}
+			}
+		});
+		txtMessage.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				txtMessage.setText("");
+			}
+		});
 		JScrollPane areaScrollPane = new JScrollPane(txtMessage);
 		areaScrollPane.setVerticalScrollBarPolicy(
 			                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -357,6 +415,42 @@ public class Tela {
 		
 		conversacaoPanel.repaint();
 		conversacaoPanel.revalidate();
+		JScrollBar sb = scrollPane.getVerticalScrollBar();
+		sb.setValue( sb.getMaximum() );
+		txtMessage.setText("");
+		countMessages++;
+		Core.getInstance().enviarMensagem(message, this.userConversation, user);
+	}
+	
+	public void receiveMessage(String message) {
+		JTextArea messageReceive = new JTextArea(" " + message);
+		messageReceive.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
+		messageReceive.setForeground(Color.BLACK);
+		messageReceive.setBackground(new Color(197,239,247));
+		messageReceive.setEditable(false);
+		messageReceive.setLineWrap(true);
+		messageReceive.setWrapStyleWord(true);
+		int width = message.length() * 10;
+		if(width > 260)
+			width = 230;
+		int height = ((message.length() / 40) + 1)*23;
+		messageReceive.setBounds(5, countMessages * (height + 20), width, height);
+		conversacaoPanel.add(messageReceive);
+		
+		JLabel timeMessage = new JLabel(LocalTime.now().toString().substring(0, LocalTime.now().toString().indexOf(".")));
+		timeMessage.setForeground(Color.BLACK);
+		timeMessage.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		timeMessage.setBounds(5,countMessages * (height + 20)+height -5,60,30);
+		timeMessage.setVisible(true);
+		conversacaoPanel.add(timeMessage);
+		
+		conversacaoPanel.setPreferredSize(new Dimension((int) 535,
+				countMessages * (height + 30)));
+		
+		conversacaoPanel.repaint();
+		conversacaoPanel.revalidate();
+		JScrollBar sb = scrollPane.getVerticalScrollBar();
+		sb.setValue( sb.getMaximum() );
 		txtMessage.setText("");
 		countMessages++;
 	}

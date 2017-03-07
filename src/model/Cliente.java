@@ -26,6 +26,12 @@ public class Cliente {
 	}
    }
    
+   public void enviarMensagemPara(String message, String userTo, String userFrom){
+	   ResponseHandler response = new ResponseHandler();
+		
+		this.enviaMensagemAoServidor(response.enviarMensagem(message, userTo, userFrom));
+   }
+   
    public void enviaMensagemAoServidor(String msg){
 		try {
 			PrintStream ps = new PrintStream(servidor.getOutputStream());

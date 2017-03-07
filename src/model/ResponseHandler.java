@@ -17,4 +17,16 @@ public class ResponseHandler {
 		return this.parser.parseResponseToJson(response);
 	}
 
+	public String enviarMensagem(String message, String userTo, String userFrom) {
+		ResponseProtocol response = new ResponseProtocol();
+		response.setCmd("enviar");
+		response.setId(userFrom);
+		if(userTo.equals("servidor"))
+			response.setDst("0");
+		else
+			response.setDst(userTo);
+		response.setData(message);
+		return this.parser.parseResponseToJson(response);
+	}
+
 }

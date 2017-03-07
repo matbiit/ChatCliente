@@ -21,6 +21,10 @@ public class Core {
 		cliente.iniciarNoIPePorta(user, ip, porta);
 	}
 	
+	public void enviarMensagem(String message, String userTo, String userFrom){
+		cliente.enviarMensagemPara(message, userTo, userFrom);
+	}
+	
 	
 	public static Core getInstance(){
 		return instance;

@@ -125,6 +125,33 @@ public class Login extends JDialog {
 		txtUserName.setCaretColor(Color.WHITE);
 		txtUserName.setBackground(new Color(137,196,244));
 		txtUserName.setColumns(10);
+		txtUserName.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				txtUserName.setText("");
+			}
+		});
 		txtUserName.addKeyListener(new KeyListener() {
 			
 			@Override

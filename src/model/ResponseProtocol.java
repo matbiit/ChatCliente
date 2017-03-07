@@ -8,7 +8,7 @@ public class ResponseProtocol {
 	private String id;
 	private String msgNr;
 	private String dst;
-	private String[] data;
+	private String data;
 	
 	public ResponseProtocol(){
 		this.msgNr = UUID.randomUUID().toString();
@@ -43,10 +43,10 @@ public class ResponseProtocol {
 		this.dst = dst;
 	}
 
-	public String[] getData() {
+	public String getData() {
 		return data;
 	}
-	public void setData(String... data) {
+	public void setData(String data) {
 		this.data = data;
 	}
 
