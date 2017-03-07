@@ -5,6 +5,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import view.Login;
+import view.Tela;
+
 class RequestHandler implements Runnable {
 
 	private Socket servidor;
@@ -18,8 +21,9 @@ class RequestHandler implements Runnable {
 	public void run() {
 		try(Scanner s = new Scanner(this.servidor.getInputStream())) {
 			while (s.hasNextLine()) {
-				System.out.println(s.nextLine());
-				RequestProtocol request = parser.parseToRequest(s.nextLine());
+				String requestLine = s.nextLine();
+				System.out.println(requestLine);
+				RequestProtocol request = parser.parseToRequest(requestLine);
 				this.checkRequest(request);
 			}
 		} catch (IOException e) {
@@ -28,6 +32,11 @@ class RequestHandler implements Runnable {
 	}
 
 	private void checkRequest(RequestProtocol request) {
-		
+		if(request.getUserLoggedIn().size() > 1){
+			for (String user : request.getUserLoggedIn()) {
+				if(!user.equalsIgnoreCase(Login.getInstance().getUser()))
+					Tela.getInstance().addUser(user);
+			}
+		}
 	}
 }

@@ -1,9 +1,11 @@
 package view;
 
 
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics2D;
@@ -17,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -24,13 +28,22 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
+
 
 public class Tela {
 
 	private JFrame frame;
-	private JLabel lblMinimize;
+	private JLabel lblMinimize, lblNoMessage, lblNoChats;
 	private Point clicked;
+	private JTextArea txtMessage;
+	private JPanel mainPanel, conversaPanel, conversacaoPanel;
+	private int contUsers = 0;
+	private int countMessages = 0;
 	private String user = Login.getInstance().getUser();
+	private static Tela instance = new Tela();
 	
 	/**
 	 * Launch the application.
@@ -40,7 +53,7 @@ public class Tela {
 	/**
 	 * Create the application.
 	 */
-	public Tela() {
+	private Tela() {
 		initialize();
 	}
 
@@ -48,6 +61,12 @@ public class Tela {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+		}
+		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 750, 480);
 		frame.getContentPane().setBackground(new Color(245,250,253));
@@ -131,7 +150,7 @@ public class Tela {
 		});
 		cabecalhoPanel.add(lblClose);
 		
-		JPanel mainPanel = new JPanel();
+		mainPanel = new JPanel();
 		mainPanel.setBounds(0, 0, frame.getWidth(), frame.getHeight());
 		mainPanel.setBackground(new Color(245,250,253));
 		mainPanel.setBorder(BorderFactory.createLineBorder(new Color(30,30,30)));
@@ -180,29 +199,25 @@ public class Tela {
 		lblSeparador.setVisible(true);
 		mainPanel.add(lblSeparador);
 		
-		JPanel servidorChatPanel = createUserPanel("servidor", 0);
-		JPanel rafaelChatPanel = createUserPanel("rafael", 1);
-		
+		JPanel servidorChatPanel = createUserPanel("servidor");
 		mainPanel.add(servidorChatPanel);
-		mainPanel.add(rafaelChatPanel);
 		
-		JPanel conversaPanel = new JPanel();
+		conversaPanel = new JPanel();
 		conversaPanel.setBounds(200, 35, 550, 445);
 		conversaPanel.setBackground(Color.WHITE);
 		conversaPanel.setBorder(BorderFactory.createLineBorder(new Color(191,191,191)));
 		conversaPanel.setLayout(null);
-		
 
-		JLabel lblNoMessage = new JLabel();
+		lblNoMessage = new JLabel();
 		lblNoMessage.setIcon(new ImageIcon(this.getClass().getResource("/imgs/no-message.png")));
 		lblNoMessage.setBounds(150, 30, 256,256);
 		lblNoMessage.setVisible(true);
 		conversaPanel.add(lblNoMessage);
 		
-		JLabel lblNoChats = new JLabel("Sem mensagens. Abra um chat, por favor!");
+		lblNoChats = new JLabel("Sem mensagens. Abra um chat, por favor!");
 		lblNoChats.setForeground(Color.BLACK);
 		lblNoChats.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		lblNoChats.setBounds(110,300,350,30);
+		lblNoChats.setBounds(100,300,350,30);
 		lblNoChats.setVisible(true);
 		conversaPanel.add(lblNoChats);
 		
@@ -216,12 +231,143 @@ public class Tela {
 		
 	}
 
-	private JPanel createUserPanel(String user, int order) {
+	private void openChat(String userConversation) {
+		JLabel photoUserConversation;
+		int sizeUserConversation = 70;
+		
+		try {
+			photoUserConversation = drawPhoto(userConversation, sizeUserConversation);
+		} catch (IOException e1) {
+			System.out.println("ERROR to upload photo");
+			photoUserConversation = new JLabel();
+			photoUserConversation.setIcon(new ImageIcon(this.getClass().getResource("/imgs/users/user.png")));
+		}
+		
+		photoUserConversation.setBounds(15, 20, sizeUserConversation, sizeUserConversation);
+		photoUserConversation.setVisible(true);
+		conversaPanel.add(photoUserConversation);
+		
+		JLabel lblUserNameConversation = new JLabel(userConversation.substring(0, 1).toUpperCase() + userConversation.substring(1));
+		lblUserNameConversation.setForeground(Color.BLACK);
+		lblUserNameConversation.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		lblUserNameConversation.setBounds(95,25,150,30);
+		lblUserNameConversation.setVisible(true);
+		conversaPanel.add(lblUserNameConversation);
+		
+		JLabel lblStatusConversation = new JLabel("Online");
+		lblStatusConversation.setForeground(new Color(38,194,129));
+		lblStatusConversation.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		lblStatusConversation.setBounds(95,45,70,30);
+		lblStatusConversation.setVisible(true);
+		conversaPanel.add(lblStatusConversation);
+		
+		conversacaoPanel = new JPanel();
+		conversacaoPanel.setBackground(Color.white);
+		conversacaoPanel.setLayout(null);
+		
+		LightScrollPane scrollPane = new LightScrollPane(conversacaoPanel);
+		scrollPane.setBorder(null);
+		scrollPane.setLocation(5, 110);
+		scrollPane.setSize(535,250);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(50*2);
+		conversacaoPanel.revalidate();
+
+		conversaPanel.add(scrollPane);
+		
+		
+		JLabel lblSeparadorConversationTxtArea = new JLabel("_______________________________________________________________________________________________________");
+		lblSeparadorConversationTxtArea.setForeground(new Color(191,191,191));
+		lblSeparadorConversationTxtArea.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblSeparadorConversationTxtArea.setBounds(1,350,558,20);
+		lblSeparadorConversationTxtArea.setVisible(true);
+		conversaPanel.add(lblSeparadorConversationTxtArea);
+		
+		txtMessage = new JTextArea();
+		txtMessage.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
+		txtMessage.setForeground(Color.BLACK);
+		txtMessage.setCaretColor(Color.BLACK);
+		txtMessage.setLineWrap(true);
+		txtMessage.setWrapStyleWord(true);
+		JScrollPane areaScrollPane = new JScrollPane(txtMessage);
+		areaScrollPane.setVerticalScrollBarPolicy(
+			                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		areaScrollPane.setPreferredSize(new Dimension(550, 60));
+		areaScrollPane.setBounds(5, 380, 500, 60);
+		areaScrollPane.setBorder(null);
+		areaScrollPane.setVisible(true);
+		conversaPanel.add(areaScrollPane);
+		
+		JLabel lblSend = new JLabel();
+		lblSend.setIcon(new ImageIcon(this.getClass().getResource("/imgs/send.png")));
+		lblSend.setBounds(510, 395, 30, 30);
+		lblSend.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				frame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				frame.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				sendMessage(txtMessage.getText());
+			}
+		});
+		conversaPanel.add(lblSend);
+	}
+
+	private void sendMessage(String message) {
+		JTextArea messageSent = new JTextArea(" " + message);
+		messageSent.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
+		messageSent.setForeground(Color.BLACK);
+		messageSent.setBackground(new Color(107,185,240));
+		messageSent.setEditable(false);
+		messageSent.setLineWrap(true);
+		messageSent.setWrapStyleWord(true);
+		int width = message.length() * 10;
+		if(width > 260)
+			width = 230;
+		int height = ((message.length() / 40) + 1)*23;
+		messageSent.setBounds(250+(250-width)+20, countMessages * (height + 20), width, height);
+		conversacaoPanel.add(messageSent);
+		
+		JLabel timeMessage = new JLabel(LocalTime.now().toString().substring(0, LocalTime.now().toString().indexOf(".")));
+		timeMessage.setForeground(Color.BLACK);
+		timeMessage.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		timeMessage.setBounds(480,countMessages * (height + 20)+height -5,60,30);
+		timeMessage.setVisible(true);
+		conversacaoPanel.add(timeMessage);
+		
+		conversacaoPanel.setPreferredSize(new Dimension((int) 535,
+				countMessages * (height + 20)));
+		
+		conversacaoPanel.repaint();
+		conversacaoPanel.revalidate();
+		txtMessage.setText("");
+		countMessages++;
+	}
+
+	private JPanel createUserPanel(String user) {
 		
 		JPanel userChatPanel = new JPanel();
-		userChatPanel.setBounds(1, 218 + (70*order), 195, 70);
+		userChatPanel.setBounds(1, 218 + (70*contUsers++), 195, 70);
 		userChatPanel.setBackground(new Color(245,250,253));
 		userChatPanel.setLayout(null);
+		userChatPanel.setToolTipText("Abra o chat com " + user.substring(0, 1).toUpperCase() + user.substring(1));
 		userChatPanel.addMouseListener(new MouseListener() {
 			
 			@Override
@@ -246,7 +392,10 @@ public class Tela {
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+				conversaPanel.removeAll();
+				conversaPanel.repaint();
+				conversaPanel.revalidate();
+				openChat(user);
 			}
 		});
 		
@@ -378,6 +527,16 @@ public class Tela {
 				}
 			});
 		}
+	}
+	
+	public void addUser(String user){
+		mainPanel.add(createUserPanel(user));
+		mainPanel.repaint();
+		mainPanel.revalidate();
+	}
+	
+	public static Tela getInstance(){
+		return instance;
 	}
 	
 }

@@ -1,19 +1,15 @@
 package model;
 
+import java.util.Set;
+
 public class RequestProtocol {
 	
-	private String cmd;
 	private String id;
 	private String msgNr;
 	private String dst;
 	private String data;
+	private Set<String> userLoggedIn;
 	
-	public String getCmd() {
-		return cmd;
-	}
-	public void setCmd(String cmd) {
-		this.cmd = cmd;
-	}
 	public String getId() {
 		return id;
 	}
@@ -37,6 +33,12 @@ public class RequestProtocol {
 	}
 	public void setData(String data) {
 		this.data = data;
+	}
+	public Set<String> getUserLoggedIn() {
+		return userLoggedIn;
+	}
+	public void setUserLoggedIn(Set<String> userLoggedIn) {
+		this.userLoggedIn = userLoggedIn;
 	}
 	
 }

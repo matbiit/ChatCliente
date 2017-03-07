@@ -425,7 +425,7 @@ public class Login extends JDialog {
 		
 		connected = false;
 		instance.setVisible(false);
-		new Tela();
+		Tela.getInstance();
 	}
 
 
