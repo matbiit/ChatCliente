@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -50,6 +51,7 @@ public class Tela {
 	private int contUsers = 0;
 	private int countMessages = 0;
 	private int intMessage = 0;
+	private ArrayList<String> users = new ArrayList<>();
 	private String user = Login.getInstance().getUser();
 	private String userConversation;
 	private static Tela instance = new Tela();
@@ -194,6 +196,41 @@ public class Tela {
 		lblStatus.setVisible(true);
 		mainPanel.add(lblStatus);
 		
+		JLabel lblDeslogar = new JLabel("Sair");
+		lblDeslogar.setForeground(new Color(231,76,60));
+		lblDeslogar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		lblDeslogar.setBounds(175,30,70,30);
+		lblDeslogar.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				frame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				frame.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				Core.getInstance().deslogar(user);
+				System.exit(0);
+			}
+		});
+		lblDeslogar.setVisible(true);
+		mainPanel.add(lblDeslogar);
+		
 		JLabel lblContatos = new JLabel("CONTATOS");
 		lblContatos.setForeground(Color.BLACK);
 		lblContatos.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -280,7 +317,7 @@ public class Tela {
 		scrollPane.setBorder(null);
 		scrollPane.setLocation(5, 110);
 		scrollPane.setSize(535,250);
-		scrollPane.getVerticalScrollBar().setUnitIncrement(50*2);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(10);
 		conversacaoPanel.revalidate();
 
 		conversaPanel.add(scrollPane);
@@ -431,9 +468,11 @@ public class Tela {
 		messageReceive.setLineWrap(true);
 		messageReceive.setWrapStyleWord(true);
 		int width = message.length() * 10;
-		if(width > 260)
-			width = 230;
 		int height = ((message.length() / 40) + 1)*23;
+		if(width > 260){
+			width = 250;
+			height+= 23;
+		}
 		messageReceive.setBounds(5, countMessages * (height + 20), width, height);
 		conversacaoPanel.add(messageReceive);
 		
@@ -525,13 +564,8 @@ public class Tela {
 	}
 	
 	private JLabel drawPhoto(String user, int size) throws IOException {
-		
-		Path currentRelativePath = Paths.get("");
-		String path = currentRelativePath.toAbsolutePath().toString();
-		path = path.concat(File.separator + "src" + File.separator + "imgs" + File.separator + "users" + File.separator);
-		File image = new File( path + user.toLowerCase() + ".png");
-		
-		BufferedImage master = scale(ImageIO.read(image),size,size);
+
+		BufferedImage master = scale(ImageIO.read(this.getClass().getResource("/imgs/users/" + user + ".png")),size,size);
 	    int diameter = Math.min(master.getWidth(), master.getHeight());
 	    BufferedImage mask = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
@@ -624,9 +658,14 @@ public class Tela {
 	}
 	
 	public void addUser(String user){
+		users.add(user);
 		mainPanel.add(createUserPanel(user));
 		mainPanel.repaint();
 		mainPanel.revalidate();
+	}
+	
+	public ArrayList<String> getUsers(){
+		return this.users;
 	}
 	
 	public static Tela getInstance(){

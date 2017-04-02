@@ -7,8 +7,9 @@ public class RequestProtocol {
 	private String id;
 	private String msgNr;
 	private String dst;
-	private DataProtocol data;
+	private String data;
 	private Set<String> userLoggedIn;
+	private int ack;
 	
 	public String getId() {
 		return id;
@@ -28,10 +29,10 @@ public class RequestProtocol {
 	public void setDst(String dst) {
 		this.dst = dst;
 	}
-	public DataProtocol getData() {
+	public String getData() {
 		return data;
 	}
-	public void setData(DataProtocol data) {
+	public void setData(String data) {
 		this.data = data;
 	}
 	public Set<String> getUserLoggedIn() {
@@ -39,6 +40,12 @@ public class RequestProtocol {
 	}
 	public void setUserLoggedIn(Set<String> userLoggedIn) {
 		this.userLoggedIn = userLoggedIn;
+	}
+	public int getAck() {
+		return ack;
+	}
+	public void setAck(int ack) {
+		this.ack = ack;
 	}
 	
 }

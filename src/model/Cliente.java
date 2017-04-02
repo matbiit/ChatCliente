@@ -8,7 +8,8 @@ import java.util.Scanner;
 public class Cliente {
    
 	private Socket servidor; 
-   
+	private int ack;
+	
    public void iniciarNoIPePorta(String user, String ip, String porta) {
 	try {
 		servidor = new Socket(ip, Integer.parseInt(porta));
@@ -29,7 +30,13 @@ public class Cliente {
    public void enviarMensagemPara(String message, String userTo, String userFrom){
 	   ResponseHandler response = new ResponseHandler();
 		
-		this.enviaMensagemAoServidor(response.enviarMensagem(message, userTo, userFrom));
+	   this.enviaMensagemAoServidor(response.enviarMensagem(ack, message, userTo, userFrom));
+   }
+   
+   public void deslogar(String id){
+	   ResponseHandler response = new ResponseHandler();
+		
+	   this.enviaMensagemAoServidor(response.doLogout(id));
    }
    
    public void enviaMensagemAoServidor(String msg){
@@ -42,4 +49,12 @@ public class Cliente {
 			e.printStackTrace();
 		}
 	}
+
+public int getAck() {
+	return ack;
+}
+
+public void setAck(int ack) {
+	this.ack = ++ack;
+}
 }

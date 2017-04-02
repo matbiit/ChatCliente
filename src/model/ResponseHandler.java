@@ -16,8 +16,15 @@ public class ResponseHandler {
 		response.setId(id);
 		return this.parser.parseResponseToJson(response);
 	}
+	
+	public String doLogout(String id) {
+		ResponseProtocol response = new ResponseProtocol();
+		response.setCmd("logout");
+		response.setId(id);
+		return this.parser.parseResponseToJson(response);
+	}
 
-	public String enviarMensagem(String message, String userTo, String userFrom) {
+	public String enviarMensagem(int ack, String message, String userTo, String userFrom) {
 		ResponseProtocol response = new ResponseProtocol();
 		response.setCmd("enviar");
 		response.setId(userFrom);

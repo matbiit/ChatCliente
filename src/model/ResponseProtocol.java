@@ -6,12 +6,12 @@ public class ResponseProtocol {
 	
 	private String cmd;
 	private String id;
-	private String msgNr;
+	private int msgNr;
 	private String dst;
 	private String data;
 	
 	public ResponseProtocol(){
-		this.msgNr = UUID.randomUUID().toString();
+		this.msgNr++;
 	}
 	
 	public String getCmd() {
@@ -28,10 +28,10 @@ public class ResponseProtocol {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getMsgNr() {
+	public int getMsgNr() {
 		return msgNr;
 	}
-	public void setMsgNr(String msgNr) {
+	public void setMsgNr(int msgNr) {
 		this.msgNr = msgNr;
 	}
 	

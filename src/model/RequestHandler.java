@@ -5,13 +5,16 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import controller.Core;
 import view.Login;
+import view.PopUpMessage;
 import view.Tela;
 
 class RequestHandler implements Runnable {
 
 	private Socket servidor;
 	private Parser parser;
+	private int count = 0;
 	
 	public RequestHandler(Socket servidor) {
 		this.servidor = servidor;
@@ -24,6 +27,7 @@ class RequestHandler implements Runnable {
 				String requestLine = s.nextLine();
 				System.out.println(requestLine);
 				RequestProtocol request = parser.parseToRequest(requestLine);
+				Core.getInstance().getCliente().setAck(request.getAck());
 				this.checkRequest(request);
 			}
 		} catch (IOException e) {
@@ -35,12 +39,26 @@ class RequestHandler implements Runnable {
 		if(request.getUserLoggedIn() != null)
 			if(request.getUserLoggedIn().size() > 1){
 				for (String user : request.getUserLoggedIn()) {
-					if(!user.equalsIgnoreCase(Login.getInstance().getUser()))
-						Tela.getInstance().addUser(user);
+					if(!Tela.getInstance().getUsers().contains(user))
+						if(!user.equalsIgnoreCase(Login.getInstance().getUser())){
+							Tela.getInstance().addUser(user);
+							if(count > 0){
+								new Thread(new Runnable() {
+									
+									@Override
+									public void run() {
+										System.out.println(user);
+										new PopUpMessage(user);
+									}
+								}).start();
+							}
+							
+						}
 				}
 			}
+		count++;
 		if(request.getData() != null){
-			Tela.getInstance().receiveMessage(request.getData().getData());
+			Tela.getInstance().receiveMessage(request.getData());
 		}
 			
 	}

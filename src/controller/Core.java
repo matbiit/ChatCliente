@@ -21,6 +21,10 @@ public class Core {
 		cliente.iniciarNoIPePorta(user, ip, porta);
 	}
 	
+	public void deslogar(String id){
+		cliente.deslogar(id);
+	}
+	
 	public void enviarMensagem(String message, String userTo, String userFrom){
 		cliente.enviarMensagemPara(message, userTo, userFrom);
 	}
@@ -28,5 +32,9 @@ public class Core {
 	
 	public static Core getInstance(){
 		return instance;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
 	}
 }
