@@ -1,15 +1,14 @@
 package model;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RequestProtocol {
 	
 	private String id;
-	private String msgNr;
+	private int msgNr;
 	private String dst;
-	private String data;
-	private Set<String> userLoggedIn;
-	private int ack;
+	private ArrayList<HashMap<String, String>> data;
 	
 	public String getId() {
 		return id;
@@ -17,10 +16,10 @@ public class RequestProtocol {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getMsgNr() {
+	public int getMsgNr() {
 		return msgNr;
 	}
-	public void setMsgNr(String msgNr) {
+	public void setMsgNr(int msgNr) {
 		this.msgNr = msgNr;
 	}
 	public String getDst() {
@@ -29,23 +28,11 @@ public class RequestProtocol {
 	public void setDst(String dst) {
 		this.dst = dst;
 	}
-	public String getData() {
+	public ArrayList<HashMap<String, String>> getData() {
 		return data;
 	}
-	public void setData(String data) {
+	public void setData(ArrayList<HashMap<String, String>> data) {
 		this.data = data;
-	}
-	public Set<String> getUserLoggedIn() {
-		return userLoggedIn;
-	}
-	public void setUserLoggedIn(Set<String> userLoggedIn) {
-		this.userLoggedIn = userLoggedIn;
-	}
-	public int getAck() {
-		return ack;
-	}
-	public void setAck(int ack) {
-		this.ack = ack;
 	}
 	
 }

@@ -2,19 +2,18 @@ package model;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import controller.Core;
-import view.Login;
-import view.PopUpMessage;
+//import view.Login;
+//import view.PopUpMessage;
 import view.Tela;
 
 class RequestHandler implements Runnable {
 
 	private Socket servidor;
 	private Parser parser;
-	private int count = 0;
+//	private int count = 0;
 	
 	public RequestHandler(Socket servidor) {
 		this.servidor = servidor;
@@ -27,7 +26,7 @@ class RequestHandler implements Runnable {
 				String requestLine = s.nextLine();
 				System.out.println(requestLine);
 				RequestProtocol request = parser.parseToRequest(requestLine);
-				Core.getInstance().getCliente().setAck(request.getAck());
+				Core.getInstance().getCliente().setMsgNr(request.getMsgNr());
 				this.checkRequest(request);
 			}
 		} catch (IOException e) {
@@ -36,30 +35,31 @@ class RequestHandler implements Runnable {
 	}
 
 	private void checkRequest(RequestProtocol request) {
-		if(request.getUserLoggedIn() != null)
-			if(request.getUserLoggedIn().size() > 1){
-				for (String user : request.getUserLoggedIn()) {
-					if(!Tela.getInstance().getUsers().contains(user))
-						if(!user.equalsIgnoreCase(Login.getInstance().getUser())){
-							Tela.getInstance().addUser(user);
-							if(count > 0){
-								new Thread(new Runnable() {
-									
-									@Override
-									public void run() {
-										System.out.println(user);
-										new PopUpMessage(user);
-									}
-								}).start();
-							}
-							
-						}
-				}
-			}
-		count++;
-		if(request.getData() != null){
-			Tela.getInstance().receiveMessage(request.getData());
-		}
+//		if(request.getUserLoggedIn() != null)
+//			if(request.getUserLoggedIn().size() > 1){
+//				for (String user : request.getUserLoggedIn()) {
+//					if(!Tela.getInstance().getUsers().contains(user))
+//						if(!user.equalsIgnoreCase(Login.getInstance().getUser())){
+//							Tela.getInstance().addUser(user);
+//							if(count > 0){
+//								new Thread(new Runnable() {
+//									
+//									@Override
+//									public void run() {
+//										System.out.println(user);
+//										new PopUpMessage(user);
+//									}
+//								}).start();
+//							}
+//							
+//						}
+//				}
+//			}
+//		count++;
+		if(Cliente.notFirstTime)
+			if(request.getData() != null)
+				if(request.getData().size() > 0)
+					Tela.getInstance().receiveMessage(request.getData());
 			
 	}
 }

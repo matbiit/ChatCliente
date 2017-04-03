@@ -1,7 +1,5 @@
 package model;
 
-import java.util.Set;
-
 public class ResponseHandler {
 	
 	private Parser parser;
@@ -33,6 +31,13 @@ public class ResponseHandler {
 		else
 			response.setDst(userTo);
 		response.setData(message);
+		return this.parser.parseResponseToJson(response);
+	}
+	
+	public String receberMensagens(String userFrom) {
+		ResponseProtocol response = new ResponseProtocol();
+		response.setCmd("receber");
+		response.setId(userFrom);
 		return this.parser.parseResponseToJson(response);
 	}
 

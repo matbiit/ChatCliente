@@ -2,7 +2,6 @@ package controller;
 
 import model.Cliente;
 import view.Login;
-import view.Tela;
 
 public class Core {
 
@@ -17,7 +16,7 @@ public class Core {
 	}
 	
 	public void inicializarChat(String user, String ip, String porta){
-		this.cliente = new Cliente();
+		this.cliente = new Cliente(user);
 		cliente.iniciarNoIPePorta(user, ip, porta);
 	}
 	

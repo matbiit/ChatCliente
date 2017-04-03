@@ -1,7 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-
 import com.google.gson.Gson;
 
 public class Parser {
