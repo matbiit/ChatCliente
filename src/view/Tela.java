@@ -496,70 +496,73 @@ public class Tela {
 	}
 	
 	public void receiveMessage(ArrayList<HashMap<String, String>> message) {
-		System.out.println(message);
-		if(message.get(0).get("src").equals("0"))
-			message.get(0).put("src", "servidor");
-		
-//		JLabel status = (JLabel) userTilePanels.get(message.get(0).get("src")).getComponent(2);
-//		
-//		if(status.equals("Offline")){
-//			status.setText("Online");
-//			status.setForeground(new Color(38,194,129));
-//		}
-//		System.out.println(message.get(0).get("src"));
-		
-		JTextArea messageReceive = new JTextArea(" " + message.get(0).get("data"));
-		messageReceive.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
-		messageReceive.setForeground(Color.BLACK);
-		messageReceive.setBackground(new Color(197,239,247));
-		messageReceive.setEditable(false);
-		messageReceive.setLineWrap(true);
-		messageReceive.setWrapStyleWord(true);
-		int width = message.get(0).get("data").length() * 10;
-		int height = ((message.get(0).get("data").length() / 40) + 1)*23;
-		if(width > 260){
-			width = 250;
-			height+= 23;
+		for (int i = 0; i < message.size(); i++) {
+			System.out.println(message);
+			if(message.get(i).get("src").equals("0"))
+				message.get(i).put("src", "servidor");
+			
+//			JLabel status = (JLabel) userTilePanels.get(message.get(i).get("src")).getComponent(2);
+//			
+//			if(status.equals("Offline")){
+//				status.setText("Online");
+//				status.setForeground(new Color(38,194,129));
+//			}
+//			System.out.println(message.get(i).get("src"));
+			
+			JTextArea messageReceive = new JTextArea(" " + message.get(i).get("data"));
+			messageReceive.setFont(new Font("Segoe UI Light", Font.PLAIN, 14));
+			messageReceive.setForeground(Color.BLACK);
+			messageReceive.setBackground(new Color(197,239,247));
+			messageReceive.setEditable(false);
+			messageReceive.setLineWrap(true);
+			messageReceive.setWrapStyleWord(true);
+			int width = message.get(i).get("data").length() * 10;
+			int height = ((message.get(i).get("data").length() / 40) + 1)*23;
+			if(width > 260){
+				width = 250;
+				height+= 23;
+			}
+			messageReceive.setBounds(5, countUserMessages.getOrDefault(message.get(i).get("src"), 0) * (height + 20), width, height);
+			if(userStatus.get(message.get(i).get("src")).equals("Offline")){
+				mainPanel.add(createUserPanel(message.get(i).get("src"), "Online"));
+				mainPanel.repaint();
+				mainPanel.revalidate();
+			}
+			
+			if(userConversationPanels.get(message.get(i).get("src")) == null)
+				openChat(message.get(i).get("src"), "Online", true);
+			//conversaAtivaPanel.setVisible(false);
+			
+			if(userConversaPanels.get(message.get(i).get("src")).getComponent(2) instanceof JLabel){
+				JLabel lblStatusConversation =  (JLabel) userConversaPanels.get(message.get(i).get("src")).getComponent(2);
+				lblStatusConversation.setText(userStatus.get(message.get(i).get("src")));
+				lblStatusConversation.setForeground(new Color(38,194,129));
+				userConversaPanels.get(message.get(i).get("src")).remove(2);
+				userConversaPanels.get(message.get(i).get("src")).add(lblStatusConversation);
+				userConversaPanels.get(message.get(i).get("src")).repaint();
+				userConversaPanels.get(message.get(i).get("src")).revalidate();
+			}
+			
+			userConversationPanels.get(message.get(i).get("src")).add(messageReceive);
+			
+			JLabel timeMessage = new JLabel(LocalTime.now().toString().substring(0, LocalTime.now().toString().indexOf(".")));
+			timeMessage.setForeground(Color.BLACK);
+			timeMessage.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+			timeMessage.setBounds(5,countUserMessages.getOrDefault(message.get(i).get("src"), 0) * (height + 20)+height -5,60,30);
+			timeMessage.setVisible(true);
+			userConversationPanels.get(message.get(i).get("src")).add(timeMessage);
+			
+			userConversationPanels.get(message.get(i).get("src")).setPreferredSize(new Dimension((int) 535,
+					countUserMessages.getOrDefault(message.get(i).get("src"), 0) * (height + 30)));
+			
+			userConversationPanels.get(message.get(i).get("src")).repaint();
+			userConversationPanels.get(message.get(i).get("src")).revalidate();
+//			JScrollBar sb = scrollPane.getVerticalScrollBar();
+//			sb.setValue( sb.getMaximum() );
+			txtUserMessages.get(message.get(i).get("src")).setText("");
+			countUserMessages.put(message.get(i).get("src"), countUserMessages.getOrDefault(message.get(i).get("src"), 0) + 1);
+
 		}
-		messageReceive.setBounds(5, countUserMessages.getOrDefault(message.get(0).get("src"), 0) * (height + 20), width, height);
-		if(userStatus.get(message.get(0).get("src")).equals("Offline")){
-			mainPanel.add(createUserPanel(message.get(0).get("src"), "Online"));
-			mainPanel.repaint();
-			mainPanel.revalidate();
-		}
-		
-		if(userConversationPanels.get(message.get(0).get("src")) == null)
-			openChat(message.get(0).get("src"), "Online", true);
-		//conversaAtivaPanel.setVisible(false);
-		
-		if(userConversaPanels.get(message.get(0).get("src")).getComponent(2) instanceof JLabel){
-			JLabel lblStatusConversation =  (JLabel) userConversaPanels.get(message.get(0).get("src")).getComponent(2);
-			lblStatusConversation.setText(userStatus.get(message.get(0).get("src")));
-			lblStatusConversation.setForeground(new Color(38,194,129));
-			userConversaPanels.get(message.get(0).get("src")).remove(2);
-			userConversaPanels.get(message.get(0).get("src")).add(lblStatusConversation);
-			userConversaPanels.get(message.get(0).get("src")).repaint();
-			userConversaPanels.get(message.get(0).get("src")).revalidate();
-		}
-		
-		userConversationPanels.get(message.get(0).get("src")).add(messageReceive);
-		
-		JLabel timeMessage = new JLabel(LocalTime.now().toString().substring(0, LocalTime.now().toString().indexOf(".")));
-		timeMessage.setForeground(Color.BLACK);
-		timeMessage.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		timeMessage.setBounds(5,countUserMessages.getOrDefault(message.get(0).get("src"), 0) * (height + 20)+height -5,60,30);
-		timeMessage.setVisible(true);
-		userConversationPanels.get(message.get(0).get("src")).add(timeMessage);
-		
-		userConversationPanels.get(message.get(0).get("src")).setPreferredSize(new Dimension((int) 535,
-				countUserMessages.getOrDefault(message.get(0).get("src"), 0) * (height + 30)));
-		
-		userConversationPanels.get(message.get(0).get("src")).repaint();
-		userConversationPanels.get(message.get(0).get("src")).revalidate();
-//		JScrollBar sb = scrollPane.getVerticalScrollBar();
-//		sb.setValue( sb.getMaximum() );
-		txtUserMessages.get(message.get(0).get("src")).setText("");
-		countUserMessages.put(message.get(0).get("src"), countUserMessages.getOrDefault(message.get(0).get("src"), 0) + 1);
 	}
 
 	private JPanel createUserPanel(String user, String status) {
